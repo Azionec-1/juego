@@ -17,6 +17,8 @@ import java.util.Random
 class MainActivity : AppCompatActivity() {
 
     companion object {
+        private val pokemonsDisponibles = mutableListOf<Int>() // IDs de drawables de pokémon comprados
+        private val imagenMeowth = R.drawable.meowth
         private const val REQUEST_CODE_TIENDA = 100
         private const val PREFS_NAME = "PokemonPrefs"
         private const val PREF_JUGADOR_ID = "jugador_id"
@@ -32,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 
     // Temporizador
     private var countDownTimer: CountDownTimer? = null
-    private var tiempoRestanteMs: Long = 15_500 // valor inicial
+    private var tiempoRestanteMs: Long = 75_000 // valor inicial
 
     // BD y sesión
     private lateinit var databaseHelper: DatabaseHelper
@@ -49,7 +51,7 @@ class MainActivity : AppCompatActivity() {
 
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         jugadorId = prefs.getInt(PREF_JUGADOR_ID, -1) // debe haberse guardado en Login
-
+        cargarPokemonsComprados()
         timeText = findViewById(R.id.timeText)
         scoreText = findViewById(R.id.scoreText)
 
@@ -94,34 +96,89 @@ class MainActivity : AppCompatActivity() {
 
     private fun iniciarTemporizador(duracionMs: Long) {
         countDownTimer?.cancel()
-        countDownTimer = object : CountDownTimer(duracionMs, 1_000) {
+        countDownTimer = object : CountDownTimer(duracionMs, 100) { // Cambiado a 100ms para mostrar décimas
             override fun onTick(millisUntilFinished: Long) {
                 tiempoRestanteMs = millisUntilFinished
-                timeText.text = "Tiempo: ${millisUntilFinished / 1000} seg"
+                val minutos = (millisUntilFinished / 60000).toInt()
+                val segundos = ((millisUntilFinished % 60000) / 1000).toInt()
+                val decimas = ((millisUntilFinished % 1000) / 100).toInt()
+                timeText.text = String.format("Tiempo: %02d:%02d.%d", minutos, segundos, decimas)
             }
 
             override fun onFinish() {
                 tiempoRestanteMs = 0
-                timeText.text = "Tiempo: 0 seg"
+                timeText.text = "Tiempo: 00:00.0"
                 handler.removeCallbacks(runnable)
                 imageArray.forEach { it.visibility = View.INVISIBLE }
 
-                AlertDialog.Builder(this@MainActivity)
-                    .setTitle("Juego terminado")
-                    .setMessage("¿Reiniciar el juego?")
-                    .setPositiveButton("Sí") { _, _ ->
-                        val i = intent
-                        finish()
-                        startActivity(i)
-                    }
-                    .setNegativeButton("No") { _, _ ->
-                        Toast.makeText(this@MainActivity, "Juego Terminado =/", Toast.LENGTH_LONG).show()
-                    }
-                    .show()
+                // Verificar si ganó (30 o más puntos)
+                if (score >= 30) {
+                    // ¡VICTORIA!
+                    AlertDialog.Builder(this@MainActivity)
+                        .setTitle("¡GANASTE! 🎉")
+                        .setMessage("¡Felicidades! Obtuviste $score puntos.\n\n¿Qué deseas hacer?")
+                        .setPositiveButton("Reiniciar") { _, _ ->
+                            val i = intent
+                            finish()
+                            startActivity(i)
+                        }
+                        .setNegativeButton("Salir") { _, _ ->
+                            Toast.makeText(this@MainActivity, "¡Bien jugado! 🏆", Toast.LENGTH_SHORT)
+                                .show()
+                            finish()
+                        }
+                        .setCancelable(false)
+                        .show()
+                } else {
+                    // Juego terminado (no alcanzó 30 puntos)
+                    AlertDialog.Builder(this@MainActivity)
+                        .setTitle("Juego terminado")
+                        .setMessage("Obtuviste $score puntos.\nNecesitas 30 puntos para ganar.\n\n¿Reiniciar el juego?")
+                        .setPositiveButton("Sí") { _, _ ->
+                            val i = intent
+                            finish()
+                            startActivity(i)
+                        }
+                        .setNegativeButton("No") { _, _ ->
+                            Toast.makeText(
+                                this@MainActivity,
+                                "Juego Terminado =/",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            finish()
+                        }
+                        .setCancelable(false)
+                        .show()
+                }
             }
-        }.start()
+        }
     }
+    private fun cargarPokemonsComprados() {
+        pokemonsDisponibles.clear()
 
+        if (jugadorId > 0) {
+            val idsComprados = databaseHelper.obtenerPokemonsComprados(jugadorId)
+            val todosLosPokemons = databaseHelper.obtenerTodosLosPokemons()
+
+            for (pokemon in todosLosPokemons) {
+                if (idsComprados.contains(pokemon.id)) {
+                    val resourceId = resources.getIdentifier(
+                        pokemon.imagenNombre,
+                        "drawable",
+                        packageName
+                    )
+                    if (resourceId != 0) {
+                        pokemonsDisponibles.add(resourceId)
+                    }
+                }
+            }
+        }
+
+        // Si no tiene pokémon comprados, usar Pikachu por defecto
+        if (pokemonsDisponibles.isEmpty()) {
+            pokemonsDisponibles.add(R.drawable.pikachu)
+        }
+    }
     private fun pausarTemporizador() {
         countDownTimer?.cancel()
         handler.removeCallbacks(runnable)
@@ -132,7 +189,7 @@ class MainActivity : AppCompatActivity() {
         if (tiempoRestanteMs > 0) {
             iniciarTemporizador(tiempoRestanteMs)
         } else {
-            iniciarTemporizador(15_500)
+            iniciarTemporizador(76_000)
         }
     }
 
@@ -141,6 +198,21 @@ class MainActivity : AppCompatActivity() {
             override fun run() {
                 imageArray.forEach { it.visibility = View.INVISIBLE }
                 val randomIndex = Random().nextInt(imageArray.size)
+
+                // Determinar si aparece Meowth (10%) o un pokémon comprado (90%)
+                val esMeowth = Random().nextInt(100) < 10
+
+                if (esMeowth) {
+                    // Mostrar Meowth
+                    imageArray[randomIndex].setImageResource(imagenMeowth)
+                    imageArray[randomIndex].tag = "meowth" // Marcar como enemigo
+                } else {
+                    // Mostrar pokémon aleatorio de los comprados
+                    val pokemonAleatorio = pokemonsDisponibles[Random().nextInt(pokemonsDisponibles.size)]
+                    imageArray[randomIndex].setImageResource(pokemonAleatorio)
+                    imageArray[randomIndex].tag = "pokemon" // Marcar como amigo
+                }
+
                 imageArray[randomIndex].visibility = View.VISIBLE
                 handler.postDelayed(this, 500)
             }
@@ -149,10 +221,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun increaseScore(view: View) {
-        score += 1
+        val imageView = view as ImageView
+        val tag = imageView.tag
+
+        if (tag == "meowth") {
+            // Es Meowth (enemigo) - restar 2 puntos
+            score -= 2
+            if (score < 0) {
+                score = 0 // No permitir puntaje negativo
+            }
+            Toast.makeText(this, "¡Meowth! -2 puntos 😾", Toast.LENGTH_SHORT).show()
+        } else {
+            // Es un pokémon amigo - sumar 1 punto
+            score += 1
+        }
+
         scoreText.text = "Puntaje: $score"
     }
-
     //==================== Cerrar sesión (tu bloque integrado) ====================
 
     private fun mostrarDialogoCerrarSesion() {
@@ -211,8 +296,13 @@ class MainActivity : AppCompatActivity() {
                 score = it.getIntExtra("PUNTAJE_ACTUALIZADO", score)
                 scoreText.text = "Puntaje: $score"
             }
+
+            // Recargar pokémon comprados (por si compró uno nuevo)
+            cargarPokemonsComprados()
+
             // Reanudamos el juego al volver de la tienda
             reanudarTemporizador()
         }
     }
+
 }

@@ -46,7 +46,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun verificarSesion() {
         val prefs = getSharedPreferences("PokemonPrefs", Context.MODE_PRIVATE)
-        val jugadorId = prefs.getInt("JUGADOR_ID", -1)
+        val jugadorId = prefs.getInt("jugador_id", -1)
 
         if (jugadorId != -1) {
             // Ya hay sesión iniciada, ir directo al juego
@@ -158,7 +158,7 @@ class LoginActivity : AppCompatActivity() {
     private fun guardarSesion(jugadorId: Int) {
         val prefs = getSharedPreferences("PokemonPrefs", Context.MODE_PRIVATE)
         prefs.edit().apply {
-            putInt("JUGADOR_ID", jugadorId)
+            putInt("jugador_id", jugadorId)
             apply()
         }
     }

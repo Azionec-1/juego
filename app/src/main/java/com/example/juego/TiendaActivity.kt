@@ -31,11 +31,22 @@ class TiendaActivity : AppCompatActivity() {
         btnVolver = findViewById(R.id.btnVolver)
 
         // Inicializar base de datos
+        // Inicializar base de datos
         databaseHelper = DatabaseHelper(this)
 
-        // Obtener puntaje actual desde MainActivity
-        puntajeActual = intent.getIntExtra("PUNTAJE_ACTUAL", 0)
+// Obtener jugadorId desde SharedPreferences
+        val prefs = getSharedPreferences("PokemonPrefs", MODE_PRIVATE)
+        jugadorId = prefs.getInt("jugador_id", -1)
 
+// Validar que haya una sesión activa
+        if (jugadorId == -1) {
+            Toast.makeText(this, "Error: No hay sesión activa", Toast.LENGTH_LONG).show()
+            finish()
+            return
+        }
+
+// Obtener puntaje actual desde MainActivity
+        puntajeActual = intent.getIntExtra("PUNTAJE_ACTUAL", 0)
         // Configurar RecyclerView
         configurarRecyclerView()
 
