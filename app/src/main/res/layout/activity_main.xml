@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/timeText"
+        android:layout_width="170dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="40dp"
+        android:gravity="center"
+        android:text="Tiempo: 15 seg"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/scoreText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/scoreText"
+        android:layout_width="152dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="22dp"
+        android:gravity="center"
+        android:text="Puntaje: 0"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/gridLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timeText" />
+
+    <GridLayout
+        android:id="@+id/gridLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="140dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scoreText">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_row="0"
+            android:layout_column="0"
+            android:contentDescription="imageView"
+            android:onClick="increaseScore"
+            app:srcCompat="@drawable/pikachu" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_row="0"
+            android:layout_column="1"
+            android:contentDescription="imageView2"
+            android:onClick="increaseScore"
+            app:srcCompat="@drawable/pikachu" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_row="0"
+            android:layout_column="2"
+            android:contentDescription="imageView3"
+            android:onClick="increaseScore"
+            app:srcCompat="@drawable/pikachu" />
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_row="1"
+            android:layout_column="0"
+            android:contentDescription="imageView4"
+            android:onClick="increaseScore"
+            app:srcCompat="@drawable/pikachu" />
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_row="1"
+            android:layout_column="1"
+            android:contentDescription="imageView5"
+            android:onClick="increaseScore"
+            app:srcCompat="@drawable/pikachu" />
+
+        <ImageView
+            android:id="@+id/imageView6"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_row="1"
+            android:layout_column="2"
+            android:contentDescription="imageView6"
+            android:onClick="increaseScore"
+            app:srcCompat="@drawable/pikachu" />
+
+        <ImageView
+            android:id="@+id/imageView7"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_row="2"
+            android:layout_column="0"
+            android:contentDescription="imageView7"
+            android:onClick="increaseScore"
+            app:srcCompat="@drawable/pikachu" />
+
+        <ImageView
+            android:id="@+id/imageView8"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_row="2"
+            android:layout_column="1"
+            android:contentDescription="imageView8"
+            android:onClick="increaseScore"
+            app:srcCompat="@drawable/pikachu" />
+
+        <ImageView
+            android:id="@+id/imageView9"
+            android:layout_width="103dp"
+            android:layout_height="101dp"
+            android:layout_row="2"
+            android:layout_column="2"
+            android:contentDescription="imageView9"
+            android:onClick="increaseScore"
+            app:srcCompat="@drawable/pikachu" />
+
+    </GridLayout>
+
+    <!-- BARRA INFERIOR (fuera del Grid) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <Button
+            android:id="@+id/btnCerrarSesion"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="🚪 Salir"
+            android:textSize="16sp"
+            android:backgroundTint="#F44336"
+            android:layout_marginEnd="8dp"/>
+
+        <Button
+            android:id="@+id/btnTienda"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="🏪 Tienda"
+            android:textSize="16sp"
+            android:backgroundTint="#FF6B35"
+            android:layout_marginStart="8dp"/>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

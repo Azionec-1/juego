@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardElevation="4dp"
+    app:cardCornerRadius="12dp"
+    android:id="@+id/cardPokemon">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <!-- Imagen del Pokémon -->
+        <ImageView
+            android:id="@+id/ivPokemon"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/pikachu"/>
+
+        <!-- Info del Pokémon -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="16dp"
+            android:layout_gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tvNombrePokemon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pikachu"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#000"/>
+
+            <TextView
+                android:id="@+id/tvPrecioPokemon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Precio: 10 puntos"
+                android:textSize="16sp"
+                android:textColor="#666"
+                android:layout_marginTop="4dp"/>
+
+            <TextView
+                android:id="@+id/tvEstado"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="✓ COMPRADO"
+                android:textSize="14sp"
+                android:textColor="#4CAF50"
+                android:textStyle="bold"
+                android:layout_marginTop="4dp"
+                android:visibility="gone"/>
+        </LinearLayout>
+
+        <!-- Botón comprar -->
+        <Button
+            android:id="@+id/btnComprar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Comprar"
+            android:layout_gravity="center_vertical"
+            android:backgroundTint="#FF6B35"/>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
